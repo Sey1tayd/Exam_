@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python manage.py migrate || true && python manage.py createsuperuserauto || true && python manage.py collectstatic --noinput || true && gunicorn quizsite.wsgi --bind 0.0.0.0:${PORT:-8000}",
+    "startCommand": "/opt/venv/bin/python manage.py migrate || true && /opt/venv/bin/python manage.py createsuperuserauto || true && /opt/venv/bin/python manage.py collectstatic --noinput || true && /opt/venv/bin/gunicorn quizsite.wsgi --bind 0.0.0.0:${PORT:-8000}",
     "healthcheckPath": "/",
     "healthcheckTimeout": 150,
     "restartPolicyType": "ON_FAILURE",
