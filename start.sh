@@ -10,8 +10,11 @@ python manage.py migrate || echo "Migration failed, continuing..."
 echo "Creating superuser..."
 python manage.py createsuperuserauto || echo "Superuser creation skipped (may already exist)"
 
-echo "Loading midterm questions..."
-python manage.py load_midterm_questions || echo "Midterm questions loading skipped (may already exist)"
+echo "Loading COMP3003 midterm questions..."
+python manage.py load_midterm_questions || echo "COMP3003 midterm questions loading skipped (may already exist)"
+
+echo "Loading SAP midterm questions..."
+python manage.py load_sap_midterm_questions || echo "SAP midterm questions loading skipped (may already exist)"
 
 echo "Collecting static files..."
 python manage.py collectstatic --noinput || echo "Static collection failed, continuing..."
