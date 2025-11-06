@@ -33,7 +33,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write(f'Session already exists: {session.title}')
 
-        # All questions for Midterm (91 questions total - duplicates removed)
+        # All questions for Midterm (90 questions total - duplicates removed)
         questions = [
             {
                 'text': 'What is a key advantage of software inspections as a verification technique compared to dynamic testing?',
@@ -947,18 +947,50 @@ class Command(BaseCommand):
         existing_count = session.questions.count()
         created_count = 0
         skipped_count = 0
+        updated_count = 0
         
         for idx, q_data in enumerate(questions_data, start=1):
-            question, created = Question.objects.get_or_create(
+            # Check if question with same text already exists
+            question = Question.objects.filter(
                 session=session,
-                order=existing_count + idx,
-                defaults={
-                    'text': q_data['text'],
-                    'is_active': True
-                }
-            )
+                text=q_data['text']
+            ).first()
             
-            if created:
+            if question:
+                # Question exists, update order and ensure it's active
+                question.order = idx
+                question.is_active = True
+                question.save(update_fields=['order', 'is_active'])
+                
+                # Update choices if they exist, otherwise create them
+                existing_choices = list(question.choices.all())
+                if len(existing_choices) == len(q_data['choices']):
+                    # Update existing choices
+                    for choice, (choice_text, is_correct) in zip(existing_choices, q_data['choices']):
+                        choice.text = choice_text
+                        choice.is_correct = is_correct
+                        choice.save(update_fields=['text', 'is_correct'])
+                else:
+                    # Delete old choices and create new ones
+                    question.choices.all().delete()
+                    for choice_text, is_correct in q_data['choices']:
+                        Choice.objects.create(
+                            question=question,
+                            text=choice_text,
+                            is_correct=is_correct
+                        )
+                
+                updated_count += 1
+                self.stdout.write(f'  [~] Updated question {idx}: {question.text[:50]}...')
+            else:
+                # Create new question
+                question = Question.objects.create(
+                    session=session,
+                    text=q_data['text'],
+                    order=idx,
+                    is_active=True
+                )
+                
                 # Create choices for this question
                 for choice_text, is_correct in q_data['choices']:
                     Choice.objects.create(
@@ -968,9 +1000,6 @@ class Command(BaseCommand):
                     )
                 created_count += 1
                 self.stdout.write(f'  [+] Created question {idx}: {question.text[:50]}...')
-            else:
-                skipped_count += 1
-                self.stdout.write(f'  [-] Question {idx} already exists, skipping: {question.text[:50]}...')
         
-        self.stdout.write(f'\nSummary: Created {created_count} questions, skipped {skipped_count} existing questions.')
+        self.stdout.write(f'\nSummary: Created {created_count} questions, updated {updated_count} questions.')
 
