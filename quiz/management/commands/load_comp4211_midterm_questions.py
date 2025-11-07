@@ -270,10 +270,12 @@ class Command(BaseCommand):
                 'feedback': 'Slashing economically penalizes validators for equivocation (e.g., signing conflicting chains), aligning incentives with honest behavior.'
             },
             {
-                'text': 'In a blockchain that commits transactions via a Merkle root, the complexity of a Simple Payment Verification (SPV) inclusion proof for one transaction among n is O(log n).',
+                'text': 'In a blockchain that commits transactions via a Merkle root, the complexity of a Simple Payment Verification (SPV) inclusion proof for one transaction among n is:',
                 'choices': [
-                    ('True', True),
-                    ('False', False),
+                    ('O(n log n)', False),
+                    ('O(1)', False),
+                    ('O(log n)', True),
+                    ('O(n)', False),
                 ],
                 'feedback': 'SPV proofs use Merkle paths of length proportional to log n, requiring a logarithmic number of hashes.'
             },
@@ -447,11 +449,11 @@ class Command(BaseCommand):
                 'text': 'Name one required prerequisite for the course.',
                 'choices': [
                     ('Basic Cryptography', True),
-                    ('Computer Networks', True),
-                    ('Programming', True),
+                    ('Computer Networks', False),
+                    ('Programming', False),
                     ('Quantum Computing', False),
                 ],
-                'feedback': 'Required prerequisites include Basic Cryptography, Computer Networks, or Programming.'
+                'feedback': 'Required prerequisites include Basic Cryptography, Computer Networks, or Programming. Basic Cryptography is one correct answer.'
             },
             {
                 'text': 'Many BFT-style PoS finality gadgets consider a block final when attestations meet which threshold?',
@@ -758,6 +760,46 @@ class Command(BaseCommand):
                     ('n^2 trials', False),
                 ],
                 'feedback': 'Due to the birthday paradox, collisions are expected after approximately 2^(n/2) trials.'
+            },
+            {
+                'text': 'Which property of hash functions makes it hard to find two different inputs with the same output?',
+                'choices': [
+                    ('Second preimage resistance', False),
+                    ('Collision resistance', True),
+                    ('Avalanche effect', False),
+                    ('Preimage resistance', False),
+                ],
+                'feedback': 'Collision resistance ensures it is hard to find any x ≠ x\' with h(x) = h(x\').'
+            },
+            {
+                'text': 'Which curve is the Bitcoin standard for ECDSA?',
+                'choices': [
+                    ('Ed25519', False),
+                    ('Curve25519', False),
+                    ('secp256r1', False),
+                    ('secp256k1', True),
+                ],
+                'feedback': 'secp256k1 is the Bitcoin standard for ECDSA.'
+            },
+            {
+                'text': 'What is a key benefit of Merkle trees in blockchain?',
+                'choices': [
+                    ('Perform consensus', False),
+                    ('Provide membership proofs of size O(log n)', True),
+                    ('Encrypt transactions', False),
+                    ('Store full block data', False),
+                ],
+                'feedback': 'Efficient membership proofs of size O(log n).'
+            },
+            {
+                'text': 'What effect describes a small change in input causing a huge change in hash output?',
+                'choices': [
+                    ('Avalanche effect', True),
+                    ('Butterfly effect', False),
+                    ('Cascade effect', False),
+                    ('Ripple effect', False),
+                ],
+                'feedback': 'Avalanche effect.'
             },
         ]
 
