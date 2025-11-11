@@ -34,6 +34,8 @@
         const selectedId = {% if selected_id %}{{ selected_id }}{% else %}null{% endif %};
         const feedback = '{{ feedback|default:"" }}';
         const correctChoiceId = {% if correct_choice %}{{ correct_choice.id }}{% else %}null{% endif %};
+        const justAnswered = {% if just_answered %}true{% else %}false{% endif %};
+        const nextUrl = "{{ next_url|default:''|escapejs }}";
         
         radios.forEach(function(radio) {
           const li = radio.closest('li');
@@ -76,6 +78,12 @@
             });
           }
         });
+
+        if (justAnswered && feedback === 'correct' && nextUrl) {
+          setTimeout(function() {
+            window.location.href = nextUrl;
+          }, 2000);
+        }
       });
     </script>
 

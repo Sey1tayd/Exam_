@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.db.models import Prefetch
+from django.urls import reverse
 from .models import Course, Session, Question, Choice, Attempt, Answer
 from .forms import AnswerForm
 
@@ -68,6 +69,7 @@ def run_question(request, course_slug, session_slug, index: int):
     feedback = None
     selected_id = None
     correct_choice = q.choices.filter(is_correct=True).first()
+    just_answered = False
     
     # POST işlemi - şık seçildiğinde kaydet (sadece daha önce cevaplanmamışsa)
     if request.method == "POST" and not is_answered:
@@ -87,6 +89,7 @@ def run_question(request, course_slug, session_slug, index: int):
             form.initial = {"choice_id": selected_id}
             is_answered = True
             given = ans
+            just_answered = True
     elif is_answered:
         # GET işlemi veya zaten cevaplanmış - daha önce cevaplanmışsa göster
         feedback = "correct" if given.is_correct else "wrong"
@@ -105,6 +108,18 @@ def run_question(request, course_slug, session_slug, index: int):
             state = f"current {state}"
         states.append((i, state))
 
+    if index < total:
+        next_url = reverse("quiz:run_question", kwargs={
+            "course_slug": course_slug,
+            "session_slug": session_slug,
+            "index": index + 1,
+        })
+    else:
+        next_url = reverse("quiz:finish_attempt", kwargs={
+            "course_slug": course_slug,
+            "session_slug": session_slug,
+        })
+
     return render(request, "quiz/question_run.html", {
         "session": session,
         "q": q,
@@ -117,6 +132,8 @@ def run_question(request, course_slug, session_slug, index: int):
         "is_answered": is_answered,
         "correct_choice": correct_choice,
         "given_answer": given,
+        "just_answered": just_answered,
+        "next_url": next_url,
     })
 
 

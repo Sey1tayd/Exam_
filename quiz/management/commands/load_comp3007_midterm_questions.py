@@ -584,6 +584,66 @@ class Command(BaseCommand):
                 ],
                 'feedback': '.clone() duplicates the owned allocation, producing independent Strings.'
             },
+            {
+                'text': 'Which receiver allows a method to mutate the instance without taking ownership?',
+                'choices': [
+                    ('`self` (by value) always prevents mutation.', False),
+                    ('Any of the above; they are equivalent.', False),
+                    ('`&self`', False),
+                    ('`&mut self`', True),
+                ],
+                'feedback': 'Methods that take `&mut self` borrow the instance mutably, allowing in-place mutation without taking ownership.'
+            },
+            {
+                'text': 'Which trait is used by the `{:?}` formatter in `println!` for printing values?',
+                'choices': [
+                    ('`Debug`', True),
+                    ('`Display`', False),
+                    ('Both `Debug` and `Display` simultaneously.', False),
+                    ('Neither; `{:?}` is a special-case formatter.', False),
+                ],
+                'feedback': 'The `{:?}` and `{:#?}` formatters invoke the `Debug` implementation, while `{}` relies on `Display`.'
+            },
+            {
+                'text': 'When can Rust’s field initialization shorthand be used when constructing a struct?',
+                'choices': [
+                    ('Whenever the compiler can infer the types, regardless of names.', False),
+                    ('Only inside trait implementations.', False),
+                    ('Only when the type implements `Debug`.', False),
+                    ('When local variable names exactly match the struct field names.', True),
+                ],
+                'feedback': 'Shorthand like `Point { x, y }` works when local bindings share the same names as the struct fields.'
+            },
+            {
+                'text': 'What is the purpose of async/await syntax in Rust?',
+                'choices': [
+                    ('To enforce ownership rules in concurrent access.', False),
+                    ('To write asynchronous code that resembles synchronous code, built on top of futures.', True),
+                    ('To create OS threads for parallel execution.', False),
+                    ('To pass messages between threads using channels.', False),
+                ],
+                'feedback': 'Async/await is syntax sugar over futures, enabling asynchronous workflows with familiar sequential-looking code.'
+            },
+            {
+                'text': 'Which threading model does Rust primarily use for concurrency?',
+                'choices': [
+                    ('M:N model, also known as green threads.', False),
+                    ('1:1 model, where one OS thread maps to one language thread.', True),
+                    ('Async/await model exclusively for all concurrency.', False),
+                    ('A hybrid model combining OS threads and futures.', False),
+                ],
+                'feedback': 'The standard library’s `std::thread` spawns native OS threads in a 1:1 mapping.'
+            },
+            {
+                'text': 'What are the typical average-case time complexities for lookup and insertion in a hash map implementation?',
+                'choices': [
+                    ('Both lookup and insertion are O(1) on average.', True),
+                    ('Lookup is O(log n) and insertion is O(1) on average.', False),
+                    ('Lookup is O(1) and insertion is O(log n) on average.', False),
+                    ('Lookup is O(n) but deletion is always O(1) on average.', False),
+                ],
+                'feedback': 'With a well-distributed hash function, both lookups and insertions run in expected constant time.'
+            },
         ]
 
         self._load_questions(session, questions)
